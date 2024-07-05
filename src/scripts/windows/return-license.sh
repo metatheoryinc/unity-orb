@@ -34,7 +34,10 @@ fi
 
 set -x
 # Return license
-docker exec "$CONTAINER_NAME" powershell '& "C:\Program Files\Unity\Hub\Editor\*\Editor\Unity.exe" -returnlicense -batchmode -quit -nographics -username $Env:UNITY_USERNAME -password $Env:UNITY_PASSWORD -logfile | Out-Host'
+docker exec "$CONTAINER_NAME" powershell -Command "
+\$unityExe = 'C:\UnityEditor\' + \$Env:UNITY_VERSION + '\Editor\Unity.exe';
+& \$unityExe -returnlicense -batchmode -quit -nographics -username \$Env:UNITY_USERNAME -password \$Env:UNITY_PASSWORD -logfile | Out-Host
+"
 set +x
 
 # Remove the container.

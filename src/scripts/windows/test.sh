@@ -33,7 +33,10 @@ test_args=(
 
 # Run the tests.
 set -x
-docker exec "$CONTAINER_NAME" powershell "& 'C:\Program Files\Unity\Hub\Editor\*\Editor\Unity.exe' ${test_args[*]} -logfile | Out-Host"
+docker exec "$CONTAINER_NAME" powershell -Command "
+\$unityExe = 'C:\UnityEditor\' + \$Env:UNITY_VERSION + '\Editor\Unity.exe';
+& \$unityExe ${test_args[*]} -logfile | Out-Host
+"
 set +x
 
 # Install JDK to run Saxon.

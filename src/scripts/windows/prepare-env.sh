@@ -107,6 +107,7 @@ docker run -dit \
   --env UNITY_USERNAME="$unity_username" \
   --env UNITY_PASSWORD="$unity_password" \
   --env UNITY_SERIAL="$resolved_unity_serial" \
+  --env UNITY_VERSION="$GAMECI_EDITOR_VERSION" \
   --volume "$unity_project_full_path":C:/unity_project \
   --volume "$base_dir"/regkeys:"C:/regkeys" \
   --volume "$base_dir"/build:"C:/build" \
@@ -143,5 +144,9 @@ docker exec "$container_name" powershell "Get-ItemProperty -Path 'HKLM:\SYSTEM\C
 docker exec "$container_name" powershell 'reg import C:\regkeys\winsdk.reg'
 docker exec "$container_name" powershell 'regsvr32 /s C:\ProgramData\Microsoft\VisualStudio\Setup\x64\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
 
-# Activate Unity
-docker exec "$container_name" powershell '& "C:\Program Files\Unity\Hub\Editor\*\Editor\Unity.exe" -batchmode -quit -nographics -username $Env:UNITY_USERNAME -password $Env:UNITY_PASSWORD -serial $Env:UNITY_SERIAL -logfile | Out-Host'
+echo "Activate Unity"
+
+docker exec "$container_name" powershell -Command "
+\$unityExe = 'C:\UnityEditor\' + \$Env:UNITY_VERSION + '\Editor\Unity.exe';
+& \$unityExe -batchmode -quit -nographics -username \$Env:UNITY_USERNAME -password \$Env:UNITY_PASSWORD -serial \$Env:UNITY_SERIAL -logfile | Out-Host
+"
